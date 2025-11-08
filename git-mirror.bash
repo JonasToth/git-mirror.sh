@@ -11,14 +11,10 @@ die() {
 log() {
     >&2 echo "[*] $*"
 }
-# Write to stdout. Intended for normal program output
-output() {
-    echo $*
-}
 
 UPSTREAM="$1"
 REPO_DIR="$2"
-INTERVAL="30s"
+: ${INTERVAL:="30s"}
 
 if [ ! -d "${REPO_DIR}" ] ; then
     log "Cloning the upstream repo ${UPSTREAM} as mirror to ${REPO_DIR}"
@@ -30,11 +26,12 @@ fi
 cd "${REPO_DIR}" || die "Failed to switch to the repository directory."
 
 log "Enable git-maintenance for persistent performance"
-git maintenance start
+git maintenance start || die "Failed to enable maintenance for the repository."
 
 while true ; do
     log "Updating the repository"
     git remote update --prune
+
     log "Sleeping for ${INTERVAL}"
     sleep "${INTERVAL}"
 done
