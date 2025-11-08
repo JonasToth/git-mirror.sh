@@ -5,6 +5,9 @@ The indended use case it to provide a local cache of a repository in CI environm
 Each run can use `git clone --reference <mounted-path-to-repo>` to reduce network traffic
 and improve throughput.
 
+The default interval is 30 seconds and can be controlled with environment variable
+`INTERVAL`.
+
 ## Example
 
 ### Direct Usage
