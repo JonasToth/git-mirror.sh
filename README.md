@@ -53,7 +53,7 @@ $ mkdir ~/software/mirror-llvm-project
 
 $ # Executing with the users UID in the container requires the mapping of the '/etc/passwd'
 $ # file. Otherwise, 'ssh' fails to access its configuration.
-$ docker run --rm \
+$ docker run --rm -it \
     --user $(id -u):$(id -g) \
     --volume $HOME/software/mirror-llvm-project:/repo:rw \
     --volume /etc/passwd:/etc/passwd:ro \

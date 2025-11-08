@@ -38,9 +38,6 @@ else
     log "Directory already contains a git repository. No clone performed"
 fi
 
-log "Enable git-maintenance for persistent performance"
-git maintenance start || die "Failed to enable maintenance for the repository."
-
 while true ; do
     log "Updating the repository"
     git remote update --prune
