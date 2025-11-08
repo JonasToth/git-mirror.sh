@@ -23,6 +23,8 @@ $ INTERVAL=2m git-mirror github.com:llvm-project/llvm ~/software/llvm-project.gi
 
 ### Containerized Usage
 
+#### Podman
+
 ```bash
 $ podman pull ghcr.io/jonastoth/git-mirror.sh:latest
 
@@ -41,10 +43,30 @@ $ podman run --rm -it \
     git@github.com:llvm/llvm-project /repo
 ```
 
+#### Docker
+
+```bash
+$ docker pull ghcr.io/jonastoth/git-mirror.sh:latest
+
+$ # Create the target directory for the mirror to allow a minimal directory mount.
+$ mkdir ~/software/mirror-llvm-project
+
+$ # Executing with the users UID in the container requires the mapping of the '/etc/passwd'
+$ # file. Otherwise, 'ssh' fails to access its configuration.
+$ docker run --rm \
+    --user $(id -u):$(id -g) \
+    --volume $HOME/software/mirror-llvm-project:/repo:rw \
+    --volume /etc/passwd:/etc/passwd:ro \
+    --volume $HOME/.ssh:/home/$USERNAME/.ssh:ro \
+    --env "INTERVAL=1m" \
+    ghcr.io/jonastoth/git-mirror.sh:latest \
+    git@github.com:llvm/llvm-project /repo
+```
+
 ## Installation
 
 ```bash
-$ # System-Wide Installation
+$ # System wide installation
 $ sudo install git-mirror.sh /usr/bin/git-mirror
 
 $ # Install only for the current user.
