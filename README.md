@@ -73,6 +73,13 @@ $ # Install only for the current user.
 $ install git-mirror.sh ~/.local/bin/git-mirror
 ```
 
+## Building the Images
+
+```bash
+$ podman build -t ghcr.io/jonastoth/git-mirror.sh:latest
+$ podman push ghcr.io/jonastoth/git-mirror.sh:latest
+```
+
 ## References
 
 - [Configuring SSH Access for git](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
