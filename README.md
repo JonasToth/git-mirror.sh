@@ -1,4 +1,4 @@
-# git-mirror.bash
+# git-mirror.sh
 
 A dead simple bash script to mirror a repository to a specific directory.
 The indended use case it to provide a local cache of a repository in CI environments.
@@ -7,26 +7,48 @@ and improve throughput.
 
 ## Example
 
+### Direct Usage
+
 The examples assume, that `git-clone` can access the provided upstream.
 My personal experience is, that setting up SSH-Keys properly is the easiest way to have
 robust automated `git` access.
 
 ```bash
-$ # Mirror 'llvm' to the directory '~/software'
+$ # Mirror 'llvm' to the directory '~/software/llvm-project.git'.
 $ git-mirror git@github.com:llvm-project/llvm ~/software/llvm-project.git
 
 $ # Perform the update of the 'llvm' repository every 2 minutes.
 $ INTERVAL=2m git-mirror github.com:llvm-project/llvm ~/software/llvm-project.git
 ```
 
+### Containerized Usage
+
+```bash
+$ podman pull ghcr.io/jonastoth/git-mirror.sh:latest
+
+$ # Create the target directory for the mirror to allow a minimal directory mount.
+$ mkdir ~/software/mirror-llvm-project
+
+$ # Adding the '--user root' option fixes user rights when mounting the repository.
+$ # If 'podman' is run as normal user, the effective UID in the container will be
+$ # the UID of the user executing the 'podman' process. This is a bit confusing...
+$ podman run --rm -it \
+    --user root \
+    --volume $HOME/software/mirror-llvm-project:/repo:rw,Z \
+    --volume $HOME/.ssh:/root/.ssh:ro,Z \
+    --env "INTERVAL=1m" \
+    ghcr.io/jonastoth/git-mirror.sh:latest \
+    git@github.com:llvm/llvm-project /repo
+```
+
 ## Installation
 
 ```bash
 $ # System-Wide Installation
-$ sudo install git-mirror.bash /usr/bin
+$ sudo install git-mirror.sh /usr/bin/git-mirror
 
 $ # Install only for the current user.
-$ install git-mirror.bash ~/.local/bin
+$ install git-mirror.sh ~/.local/bin/git-mirror
 ```
 
 ## References
