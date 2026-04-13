@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -euo pipefail
 
@@ -11,10 +11,39 @@ die() {
 log() {
     >&2 echo "[*] $*"
 }
+# Seconds since Epoch.
+secondsSinceEpoch() {
+    date '+%s'
+}
+elapsedSeconds() {
+    local timestampBefore="$1"
+    local timestampAfter="$2"
+    expr "${timestampAfter}" - "${timestampBefore}"
+}
+repositoryCleanup() {
+    log "Checking for repository errors"
+    git fsck
+
+    log "Remove unreachable objects"
+    git gc --prune=now
+
+    log "Optimizing to single .pack file"
+    git repack -Ad
+
+    log "Repository cleanup complete!"
+}
 
 UPSTREAM="$1"
 REPO_DIR="$2"
 : ${INTERVAL:="30s"}
+# Seconds inbetween cleanups.
+# 86400 := 1 day
+: ${CLEANUP_INTERVAL:="86400"}
+
+log "Running as:"
+log "  - id: $(id -u)"
+log "  - group: $(id -g)"
+log "  - \$HOME: ${HOME}"
 
 log "Performing mirror updates every ${INTERVAL}"
 
@@ -38,10 +67,18 @@ else
     log "Directory already contains a git repository. No clone performed"
 fi
 
+lastCleanup=$(secondsSinceEpoch)
 while true ; do
+    lastSync=$(secondsSinceEpoch)
     log "Updating the repository"
     git remote update --prune
 
-    log "Sleeping for ${INTERVAL}"
-    sleep "${INTERVAL}"
+    if [ $(elapsedSeconds ${lastCleanup} ${lastSync}) -ge "${CLEANUP_INTERVAL}" ] ; then
+        log "Performing repository cleanup."
+        repositoryCleanup
+        lastCleanup=$(secondsSinceEpoch)
+    else
+        log "Sleeping for ${INTERVAL}"
+        sleep "${INTERVAL}"
+    fi
 done
