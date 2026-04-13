@@ -60,7 +60,7 @@ $ docker run --rm -it \
     --user $(id -u):$(id -g) \
     --volume $HOME/software/mirror-llvm-project:/repo:rw \
     --volume /etc/passwd:/etc/passwd:ro \
-    --volume $HOME/.ssh:/home/$USERNAME/.ssh:ro \
+    --volume $HOME/.ssh:$HOME/.ssh:ro \
     --env "INTERVAL=1m" \
     ghcr.io/jonastoth/git-mirror.sh:latest \
     git@github.com:llvm/llvm-project /repo
