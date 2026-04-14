@@ -21,11 +21,11 @@ elapsedSeconds() {
     expr "${timestampAfter}" - "${timestampBefore}"
 }
 repositoryCleanup() {
-    log "Checking for repository errors"
-    git fsck
-
     log "Remove unreachable objects"
     git gc --prune=now
+
+    log "Checking for repository errors"
+    git fsck
 
     log "Optimizing to single .pack file"
     git repack -Ad
@@ -65,6 +65,7 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null ; then
     git clone --mirror "${UPSTREAM}" "." || die "Failed to clone repository. Fatal error!"
 else
     log "Directory already contains a git repository. No clone performed"
+    repositoryCleanup
 fi
 
 lastCleanup=$(secondsSinceEpoch)

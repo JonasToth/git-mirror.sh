@@ -78,9 +78,18 @@ $ install git-mirror.sh ~/.local/bin/git-mirror
 
 ## Building the Images
 
+### podman
+
 ```bash
 $ podman build -t ghcr.io/jonastoth/git-mirror.sh:latest
 $ podman push ghcr.io/jonastoth/git-mirror.sh:latest
+```
+
+### docker
+
+```bash
+$ docker build -t ghcr.io/jonastoth/git-mirror.sh:latest
+$ docker push ghcr.io/jonastoth/git-mirror.sh:latest
 ```
 
 ## References
