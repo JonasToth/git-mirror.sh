@@ -81,15 +81,15 @@ $ install git-mirror.sh ~/.local/bin/git-mirror
 ### podman
 
 ```bash
-$ podman build -t ghcr.io/jonastoth/git-mirror.sh:latest
-$ podman push ghcr.io/jonastoth/git-mirror.sh:latest
+$ podman build -t jfrog.ivu.de/build-docker-dev/git-mirror.sh:v1
+$ podman push jfrog.ivu.de/build-docker-dev/git-mirror.sh:v1
 ```
 
 ### docker
 
 ```bash
-$ docker build -t ghcr.io/jonastoth/git-mirror.sh:latest
-$ docker push ghcr.io/jonastoth/git-mirror.sh:latest
+$ docker build -t jfrog.ivu.de/build-docker-dev/git-mirror.sh:v1
+$ docker push jfrog.ivu.de/build-docker-dev/git-mirror.sh:v1
 ```
 
 ## References
